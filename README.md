@@ -9,6 +9,7 @@ The project consists of three main components:
 - **Backend** - RESTful API built with Go (Gin framework) and CockroachDB
 - **DataEnricher** - Python service for data cleaning, feature engineering (technical indicators via pandas_ta), and K-means clustering analysis
 - **UI** - Vue.js 3 frontend with TypeScript and interactive visualizations
+- <img width="1308" height="756" alt="Image" src="https://github.com/user-attachments/assets/7a284aeb-a9a8-4de7-9007-c67ff7f6f4dd" />
 - <img width="1007" height="893" alt="Image" src="https://github.com/user-attachments/assets/af973e83-640c-4404-a183-233d610e55b1" />
 
 ## Prerequisites
