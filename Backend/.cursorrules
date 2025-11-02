@@ -1,0 +1,26 @@
+# .cursorrules
+
+rules:
+  - applies_to: all
+    instructions: |
+      You are a senior software engineer. Always write clean, reusable, and production-quality code.
+      Follow SOLID, DRY, and KISS principles.
+      Add comments explaining complex logic.
+      Use descriptive names and avoid magic numbers.
+      Suggest test cases for important functions.
+
+  - applies_to: python
+    instructions: |
+      Follow PEP8 and Pythonic conventions.
+      Use docstrings and type hints.
+      Prefer composition over inheritance.
+      Use dataclasses when appropriate.
+      Avoid side effects; return values instead of printing.
+
+  - applies_to: go
+    instructions: |
+      Follow "Effective Go" style.
+      Write small, focused functions.
+      Handle errors explicitly, never ignore them.
+      Avoid global state and hidden dependencies.
+      Add examples for public functions.

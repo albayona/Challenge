@@ -1,0 +1,23 @@
+[Unit]
+Description=CockroachDB Secure Cluster
+After=network.target
+
+[Service]
+Type=forking
+User=root
+Group=root
+WorkingDirectory=/Users/andresbayona/Documents/CodingChallenge/DataExtractor/db_setup
+ExecStart=/Users/andresbayona/Documents/CodingChallenge/DataExtractor/db_setup/start_init_db.sh
+ExecStop=/Users/andresbayona/Documents/CodingChallenge/DataExtractor/db_setup/stop_secure_cluster.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+
+

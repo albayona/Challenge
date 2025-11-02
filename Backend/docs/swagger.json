@@ -1,0 +1,965 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "A RESTful API for managing stock data with full CRUD operations",
+        "title": "Stock Data Extractor API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8888",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/stocks": {
+            "get": {
+                "description": "Retrieve all stock records from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get all stocks",
+                "responses": {
+                    "200": {
+                        "description": "List of stocks",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stocks",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new stock record with the provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Create a new stock",
+                "parameters": [
+                    {
+                        "description": "Stock information",
+                        "name": "stock",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/validators.StockCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Stock created successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create stock",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/action/{action}": {
+            "get": {
+                "description": "Retrieve all stock records for a specific action",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stocks by action",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Action value",
+                        "name": "action",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of stocks for action",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid action",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stocks",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/actions": {
+            "get": {
+                "description": "Retrieve all unique action values",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get unique actions",
+                "responses": {
+                    "200": {
+                        "description": "List of unique actions",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve actions",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/cluster/{cluster}": {
+            "get": {
+                "description": "Retrieve all stock records for a specific cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stocks by cluster",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cluster id",
+                        "name": "cluster",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of stocks for cluster",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid cluster",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stocks",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/cluster/{cluster}/filter": {
+            "get": {
+                "description": "Filter stocks by cluster with optional grouping, pagination, sorting, and weighted scoring. Supports numerical and rating weights via query parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Filter stocks by cluster with grouping, pagination, sorting, and weighted scoring",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cluster id",
+                        "name": "cluster",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Grouping column: company | action | ticker | None (default: None)",
+                        "name": "grouping_column",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Grouping value to filter by (required if grouping_column is not None)",
+                        "name": "grouping_value",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort by column: ticker | action | date | company | target_to | target_from | rating_to | rating_from | final_score (default: date)",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order: asc | desc (default: desc)",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number (default: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page (default: 20)",
+                        "name": "per_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON array of numerical weights: [{\\",
+                        "name": "numerical_weights",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "JSON array of rating weights: [{\\",
+                        "name": "rating_weights",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paged grouped results",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to filter",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/clusters": {
+            "get": {
+                "description": "Retrieve all unique cluster IDs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get unique clusters",
+                "responses": {
+                    "200": {
+                        "description": "List of unique clusters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve clusters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/companies": {
+            "get": {
+                "description": "Retrieve all unique company names",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get unique companies",
+                "responses": {
+                    "200": {
+                        "description": "List of unique companies",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve companies",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/company/{company}": {
+            "get": {
+                "description": "Retrieve all stock records for a specific company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stocks by company",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Company name",
+                        "name": "company",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of stocks for company",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid company name",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "No stocks found for company",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stocks",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/database/stats": {
+            "get": {
+                "description": "Retrieve statistical information about the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get database statistics",
+                "responses": {
+                    "200": {
+                        "description": "Database statistics",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve database statistics",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/extract": {
+            "post": {
+                "description": "Trigger data extraction from external API with specified max pages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Extract data from API",
+                "parameters": [
+                    {
+                        "description": "Extraction request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/validators.StockExtractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data extraction completed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to extract data from API",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/import-enriched": {
+            "post": {
+                "description": "Import rows from ./stock_data_enriched.csv into the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Import enriched stock data from default CSV",
+                "responses": {
+                    "200": {
+                        "description": "CSV imported",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to import CSV",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/stats/{ticker}": {
+            "get": {
+                "description": "Retrieve statistical information for a specific stock ticker",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stock statistics by ticker",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stock ticker symbol",
+                        "name": "ticker",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock statistics",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ticker format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Stock not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve statistics",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/ticker/{ticker}": {
+            "get": {
+                "description": "Retrieve a specific stock record by its ticker symbol",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stock by ticker",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stock ticker symbol",
+                        "name": "ticker",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ticker format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Stock not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stock",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/{id}": {
+            "get": {
+                "description": "Retrieve a specific stock record by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Get stock by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Stock ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid stock ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Stock not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve stock",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing stock record with the provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Update stock by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Stock ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated stock information",
+                        "name": "stock",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/validators.StockUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock updated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Stock not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update stock",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific stock record by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stocks"
+                ],
+                "summary": "Delete stock by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Stock ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stock deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid stock ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Stock not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete stock",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "validators.NumericalIndicatorRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "norm_value",
+                "value"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "norm_value": {
+                    "type": "number"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "validators.RatingSentimentRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "norm_rating_score",
+                "rating",
+                "rating_score"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "norm_rating_score": {
+                    "type": "number"
+                },
+                "rating": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "rating_score": {
+                    "type": "number"
+                }
+            }
+        },
+        "validators.StockCreateRequest": {
+            "type": "object",
+            "required": [
+                "cluster",
+                "company",
+                "date",
+                "ticker"
+            ],
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "cluster": {
+                    "type": "integer"
+                },
+                "company": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "date": {
+                    "type": "string"
+                },
+                "numerical_indicators": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/validators.NumericalIndicatorRequest"
+                    }
+                },
+                "rating_from": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "rating_sentiments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/validators.RatingSentimentRequest"
+                    }
+                },
+                "rating_to": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "target_from": {
+                    "type": "number"
+                },
+                "target_to": {
+                    "type": "number"
+                },
+                "ticker": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 1
+                }
+            }
+        },
+        "validators.StockExtractRequest": {
+            "type": "object",
+            "required": [
+                "max_pages"
+            ],
+            "properties": {
+                "max_pages": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "validators.StockUpdateRequest": {
+            "type": "object",
+            "required": [
+                "cluster",
+                "company",
+                "date",
+                "id",
+                "ticker"
+            ],
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "cluster": {
+                    "type": "integer"
+                },
+                "company": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "numerical_indicators": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/validators.NumericalIndicatorRequest"
+                    }
+                },
+                "rating_from": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "rating_sentiments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/validators.RatingSentimentRequest"
+                    }
+                },
+                "rating_to": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "target_from": {
+                    "type": "number"
+                },
+                "target_to": {
+                    "type": "number"
+                },
+                "ticker": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 1
+                }
+            }
+        }
+    }
+}

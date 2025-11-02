@@ -1,0 +1,671 @@
+basePath: /
+definitions:
+  validators.NumericalIndicatorRequest:
+    properties:
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      norm_value:
+        type: number
+      value:
+        type: number
+    required:
+    - name
+    - norm_value
+    - value
+    type: object
+  validators.RatingSentimentRequest:
+    properties:
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      norm_rating_score:
+        type: number
+      rating:
+        maxLength: 50
+        minLength: 1
+        type: string
+      rating_score:
+        type: number
+    required:
+    - name
+    - norm_rating_score
+    - rating
+    - rating_score
+    type: object
+  validators.StockCreateRequest:
+    properties:
+      action:
+        maxLength: 100
+        type: string
+      cluster:
+        type: integer
+      company:
+        maxLength: 100
+        minLength: 1
+        type: string
+      date:
+        type: string
+      numerical_indicators:
+        items:
+          $ref: '#/definitions/validators.NumericalIndicatorRequest'
+        type: array
+      rating_from:
+        maxLength: 50
+        type: string
+      rating_sentiments:
+        items:
+          $ref: '#/definitions/validators.RatingSentimentRequest'
+        type: array
+      rating_to:
+        maxLength: 50
+        type: string
+      target_from:
+        type: number
+      target_to:
+        type: number
+      ticker:
+        maxLength: 20
+        minLength: 1
+        type: string
+    required:
+    - cluster
+    - company
+    - date
+    - ticker
+    type: object
+  validators.StockExtractRequest:
+    properties:
+      max_pages:
+        minimum: 0
+        type: integer
+    required:
+    - max_pages
+    type: object
+  validators.StockUpdateRequest:
+    properties:
+      action:
+        maxLength: 100
+        type: string
+      cluster:
+        type: integer
+      company:
+        maxLength: 100
+        minLength: 1
+        type: string
+      date:
+        type: string
+      id:
+        minimum: 1
+        type: integer
+      numerical_indicators:
+        items:
+          $ref: '#/definitions/validators.NumericalIndicatorRequest'
+        type: array
+      rating_from:
+        maxLength: 50
+        type: string
+      rating_sentiments:
+        items:
+          $ref: '#/definitions/validators.RatingSentimentRequest'
+        type: array
+      rating_to:
+        maxLength: 50
+        type: string
+      target_from:
+        type: number
+      target_to:
+        type: number
+      ticker:
+        maxLength: 20
+        minLength: 1
+        type: string
+    required:
+    - cluster
+    - company
+    - date
+    - id
+    - ticker
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A RESTful API for managing stock data with full CRUD operations
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Stock Data Extractor API
+  version: "1.0"
+paths:
+  /api/v1/stocks:
+    get:
+      description: Retrieve all stock records from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of stocks
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stocks
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all stocks
+      tags:
+      - stocks
+    post:
+      consumes:
+      - application/json
+      description: Create a new stock record with the provided information
+      parameters:
+      - description: Stock information
+        in: body
+        name: stock
+        required: true
+        schema:
+          $ref: '#/definitions/validators.StockCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Stock created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to create stock
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new stock
+      tags:
+      - stocks
+  /api/v1/stocks/{id}:
+    delete:
+      description: Delete a specific stock record by its ID
+      parameters:
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Stock deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid stock ID
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Stock not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to delete stock
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete stock by ID
+      tags:
+      - stocks
+    get:
+      description: Retrieve a specific stock record by its ID
+      parameters:
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Stock found
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid stock ID
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Stock not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stock
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stock by ID
+      tags:
+      - stocks
+    put:
+      consumes:
+      - application/json
+      description: Update an existing stock record with the provided information
+      parameters:
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated stock information
+        in: body
+        name: stock
+        required: true
+        schema:
+          $ref: '#/definitions/validators.StockUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Stock updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Stock not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to update stock
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update stock by ID
+      tags:
+      - stocks
+  /api/v1/stocks/action/{action}:
+    get:
+      description: Retrieve all stock records for a specific action
+      parameters:
+      - description: Action value
+        in: path
+        name: action
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of stocks for action
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid action
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stocks
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stocks by action
+      tags:
+      - stocks
+  /api/v1/stocks/actions:
+    get:
+      description: Retrieve all unique action values
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of unique actions
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve actions
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get unique actions
+      tags:
+      - stocks
+  /api/v1/stocks/cluster/{cluster}:
+    get:
+      description: Retrieve all stock records for a specific cluster
+      parameters:
+      - description: Cluster id
+        in: path
+        name: cluster
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of stocks for cluster
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid cluster
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stocks
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stocks by cluster
+      tags:
+      - stocks
+  /api/v1/stocks/cluster/{cluster}/filter:
+    get:
+      description: Filter stocks by cluster with optional grouping, pagination, sorting,
+        and weighted scoring. Supports numerical and rating weights via query parameters.
+      parameters:
+      - description: Cluster id
+        in: path
+        name: cluster
+        required: true
+        type: integer
+      - description: 'Grouping column: company | action | ticker | None (default:
+          None)'
+        in: query
+        name: grouping_column
+        type: string
+      - description: Grouping value to filter by (required if grouping_column is not
+          None)
+        in: query
+        name: grouping_value
+        type: string
+      - description: 'Sort by column: ticker | action | date | company | target_to
+          | target_from | rating_to | rating_from | final_score (default: date)'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort order: asc | desc (default: desc)'
+        in: query
+        name: order
+        type: string
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Items per page (default: 20)'
+        in: query
+        name: per_page
+        type: integer
+      - description: 'JSON array of numerical weights: [{\'
+        in: query
+        name: numerical_weights
+        type: string
+      - description: 'JSON array of rating weights: [{\'
+        in: query
+        name: rating_weights
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paged grouped results
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to filter
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Filter stocks by cluster with grouping, pagination, sorting, and weighted
+        scoring
+      tags:
+      - stocks
+  /api/v1/stocks/clusters:
+    get:
+      description: Retrieve all unique cluster IDs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of unique clusters
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve clusters
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get unique clusters
+      tags:
+      - stocks
+  /api/v1/stocks/companies:
+    get:
+      description: Retrieve all unique company names
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of unique companies
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve companies
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get unique companies
+      tags:
+      - stocks
+  /api/v1/stocks/company/{company}:
+    get:
+      description: Retrieve all stock records for a specific company
+      parameters:
+      - description: Company name
+        in: path
+        name: company
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of stocks for company
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid company name
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: No stocks found for company
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stocks
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stocks by company
+      tags:
+      - stocks
+  /api/v1/stocks/database/stats:
+    get:
+      description: Retrieve statistical information about the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Database statistics
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve database statistics
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get database statistics
+      tags:
+      - stocks
+  /api/v1/stocks/extract:
+    post:
+      consumes:
+      - application/json
+      description: Trigger data extraction from external API with specified max pages
+      parameters:
+      - description: Extraction request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/validators.StockExtractRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Data extraction completed
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to extract data from API
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Extract data from API
+      tags:
+      - stocks
+  /api/v1/stocks/import-enriched:
+    post:
+      description: Import rows from ./stock_data_enriched.csv into the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CSV imported
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to import CSV
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Import enriched stock data from default CSV
+      tags:
+      - stocks
+  /api/v1/stocks/stats/{ticker}:
+    get:
+      description: Retrieve statistical information for a specific stock ticker
+      parameters:
+      - description: Stock ticker symbol
+        in: path
+        name: ticker
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Stock statistics
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ticker format
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Stock not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve statistics
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stock statistics by ticker
+      tags:
+      - stocks
+  /api/v1/stocks/ticker/{ticker}:
+    get:
+      description: Retrieve a specific stock record by its ticker symbol
+      parameters:
+      - description: Stock ticker symbol
+        in: path
+        name: ticker
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Stock found
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ticker format
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Stock not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve stock
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get stock by ticker
+      tags:
+      - stocks
+schemes:
+- http
+- https
+swagger: "2.0"
