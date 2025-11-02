@@ -7,8 +7,12 @@ A full-stack application for extracting, enriching, and visualizing stock market
 The project consists of three main components:
 
 - **Backend** - RESTful API built with Go (Gin framework) and CockroachDB
+- <img width="1107" height="835" alt="Image" src="https://github.com/user-attachments/assets/b52dced0-680d-482d-bc10-150a07d022a4" />
 - **DataEnricher** - Python service for data cleaning, feature engineering (technical indicators via pandas_ta), and K-means clustering analysis
+- <img width="927" height="699" alt="Image" src="https://github.com/user-attachments/assets/009ed80a-5c75-419e-ac73-c347d5793f2d" />
 - **UI** - Vue.js 3 frontend with TypeScript and interactive visualizations
+- <img width="1308" height="756" alt="Image" src="https://github.com/user-attachments/assets/7a284aeb-a9a8-4de7-9007-c67ff7f6f4dd" />
+- <img width="1007" height="893" alt="Image" src="https://github.com/user-attachments/assets/af973e83-640c-4404-a183-233d610e55b1" />
 
 ## Prerequisites
 
