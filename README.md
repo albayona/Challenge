@@ -163,7 +163,41 @@ npm run test:unit       # Unit tests
 npm run test:e2e        # E2E tests
 ```
 
-## License
+## Experience & Learnings
 
-MIT
+### What I Learned
+
+I learned about stock indicators and their practical applications in financial analysis. I also learned about CockroachDB and how efficiently it can be used for horizontal scaling while maintaining consistency and ACID properties. Additionally, I gained experience with using SSL certificates for secure database connections, including how to generate and configure certificates for local development and production environments.
+
+### Problem-Solving Approach
+**ETL Pipeline:** *(Python, pandas, pandas-ta, yfinance, scikit-learn, numpy, Jupyter)*
+- Performed initial data exploration and cleaning to handle missing values, outliers, and data quality issues
+- Conducted feature engineering using correlation analysis to identify independent features, reducing multicollinearity
+- Applied K-means clustering algorithm with elbow method to determine optimal cluster count, achieving a silhouette score of 0.68 for meaningful stock segmentation
+- Enriched data with scalar/value-based technical indicators (Volatility, Price, Volume) calculated from last 3 months of data via yfinance and pandas_ta. Scalar/value-based indicators were chosen over directional/trend-based indicators as they were easier to interpret when applying normalization for the weighted algorithm
+- Calculated cluster statistics (distribution metrics, means, F-values, and p-values per feature per cluster) and normalized features/technical indicators for weighted ranking algorithm
+
+**Backend:** *(Go, Gin, GORM, CockroachDB, Swagger)*
+- Automated CockroachDB setup with SSL certificate generation and secure cluster initialization scripts
+- Modeled database tables and relations using structs with GORM validators for data validation and schema enforcement
+- Implemented clean separation of concerns (model → repository → service → controller → router)
+- Implemented middleware for graceful error handling with specific REST status codes and error messages
+- Created CSV import endpoint to load processed ETL data into the database
+- Implemented server-side sorting, pagination, grouping, and filtering for efficient data retrieval
+- Developed a flexible weighted scoring algorithm allowing users to customize indicator weights and see real-time stock rankings
+
+**Frontend:** *(Vue 3, TypeScript, Vuetify, MUI, Pinia, Plotly.js, Tailwind CSS)*
+- Designed highly reactive UI using MUI that delegates heavy computation to the backend, ensuring fast response times
+- Implemented Pinia store for centralized state management across reusable components
+- Built server-side data table with pagination, sorting, filtering, and grouping 
+- Created color cues to visualize each indicator's contribution to the weighted score 
+- Built comprehensive dashboard with cluster statistics tables and feature comparison charts
+- Created dynamic weight customization panel that updates stock rankings in real-time through backend API calls
+
+### Thoughts on the Challenge
+
+This challenge effectively combines data engineering, machine learning, backend development, and frontend design. However, I think the challenge can be a bit extensive and time-consuming. I believe the stock data should have been more complete in order to properly develop a recommendation system, but it demonstrates practical real-life scenarios where the data is not always ideal.
+
+I also think the randomness and changing nature of the stock market makes it a significant challenge to create an accurate recommendation system. For this reason, I implemented a clustering algorithm since in real life it is impossible to create an accurate prediction in the long term. The best approach would be to find patterns in the daily and short-term  data and use a weighted algorithm to rank stocks according to customizable indicator weights, allowing users to make informed decisions based on their own preferences and risk tolerance.
+
 
